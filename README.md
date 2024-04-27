@@ -1,1 +1,1 @@
-# facebook-insights-app-rt
+# fb-insights-app-rt

@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css'; // Import styles
+import 'react-datepicker/dist/react-datepicker.css';
 import './User.css';
 import TopBar from '../top-bar/TopBar';
 import { useVariables } from '../global-variables/GlobalVariablesContext';
+import CodeViewer from '../code-viewer/CodeViewer';
 
 const SERVER_BASE_URL = process.env.REACT_APP_SERVER_BASE_URL;
 
@@ -14,6 +15,7 @@ const User = () => {
     const [selectedPage, setSelectedPage] = useState('');
     const [sinceDate, setSinceDate] = useState('');
     const [untilDate, setUntilDate] = useState('');
+    const [insightsData, setInsightsData] = useState(null);
 
     // Handle page change
     const handlePageChange = (event) => {
@@ -61,6 +63,7 @@ const User = () => {
                     const insightsData = response?.data?.data;
                     if (insightsData) {
                         console.error('Insights data: ', insightsData);
+                        setInsightsData(insightsData);
                     }
                 } catch (error) {
                     console.error('Failed to fetch insights data. Error: ', error);
@@ -149,6 +152,10 @@ const User = () => {
                                 </div>
 
                                 <button className="button" type="submit" onClick={handleGetInsights}>Submit</button>
+                                { insightsData &&
+                                (
+                                    <CodeViewer data={insightsData} /> 
+                                )}
                             </div>
                         </div>
                     </div>

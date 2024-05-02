@@ -4,7 +4,7 @@ import './TopBar.css';
 import { login as fbLogin } from '../fb-js-snippet/fbJsSnippet';
 import { useVariables } from '../global-variables/GlobalVariablesContext';
 
-const SERVER_BASE_URL = process.env.REACT_APP_SERVER_BASE_URL;
+const FB_GRAPH_BASE_URL = process.env.REACT_APP_FB_GRAPH_BASE_URL;
 
 const TopBar = () => {
     const { setVariable: setGlobalVariable, getVariable: getGlobalVariable } = useVariables();
@@ -51,13 +51,11 @@ const TopBar = () => {
             try {
                 const accessToken = getGlobalVariable('accessToken');
                 if (accessToken) {
-                    // Set the authorization token as a default header for all Axios requests
-                    axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
-                    const endpointUrl = SERVER_BASE_URL + '/user/get-user';
+                    const endpointUrl = FB_GRAPH_BASE_URL + '/me?fields=id,name,email&access_token=' + accessToken;
 
                     try {
                         const response = await axios.get(endpointUrl);
-                        const userData = response?.data?.data;
+                        const userData = response?.data;
                         if (userData) {
                             setUser(userData);
                         }

@@ -7,7 +7,7 @@ import TopBar from '../top-bar/TopBar';
 import { useVariables } from '../global-variables/GlobalVariablesContext';
 import CodeViewer from '../code-viewer/CodeViewer';
 
-const SERVER_BASE_URL = process.env.REACT_APP_SERVER_BASE_URL;
+const FB_GRAPH_BASE_URL = process.env.REACT_APP_FB_GRAPH_BASE_URL;
 
 const User = () => {
     const { getVariable: getGlobalVariable } = useVariables();
@@ -53,14 +53,11 @@ const User = () => {
             if (accessToken) {
                 const pageId = selectedPage?.id;
                 const pageAccessToken = selectedPage?.access_token;
-
-                // Set the authorization token as a default header for all Axios requests
-                axios.defaults.headers.common['Authorization'] = `Bearer ${pageAccessToken}`;
-                const endpointUrl = SERVER_BASE_URL + '/insights/get-insights' + `?pageId=${pageId}&since=${sinceDate}&until=${untilDate}`;
-
+                const endpointUrl = FB_GRAPH_BASE_URL + '/' + pageId + '/insights?metric=' + 'page_fans,page_fans_country,page_impressions,page_impressions_unique' + '&since' + sinceDate + '&until' + untilDate + '&access_token=' + pageAccessToken;
+                
                 try {
                     const response = await axios.get(endpointUrl);
-                    const insightsData = response?.data?.data;
+                    const insightsData = response;
                     if (insightsData) {
                         console.error('Insights data: ', insightsData);
                         setInsightsData(insightsData);
@@ -82,13 +79,11 @@ const User = () => {
             try {
                 const accessToken = getGlobalVariable('accessToken');
                 if (accessToken) {
-                    // Set the authorization token as a default header for all Axios requests
-                    axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
-                    const endpointUrl = SERVER_BASE_URL + '/pages/get-all';
+                    const endpointUrl = FB_GRAPH_BASE_URL + '/me/accounts?access_token=' + accessToken;
 
                     try {
                         const response = await axios.get(endpointUrl);
-                        const pages = response?.data?.data?.data;
+                        const pages = response?.data?.data;
                         if (pages) {
                             setPages(pages);
                         }

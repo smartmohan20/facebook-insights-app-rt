@@ -2,19 +2,21 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './TopBar.css';
 import { login as fbLogin } from '../fb-js-snippet/fbJsSnippet';
+import { useVariables } from '../global-variables/GlobalVariablesContext';
+
+const SERVER_BASE_URL = process.env.REACT_APP_SERVER_BASE_URL;
 
 const TopBar = () => {
-    const [accessToken, setAccessToken] = useState(null);
+    const { setVariable: setGlobalVariable, getVariable: getGlobalVariable } = useVariables();
     const [user, setUser] = useState(null);
-    const SERVER_BASE_URL = process.env.REACT_APP_SERVER_BASE_URL;
-
+    
     // Handle Facebook login
     const handleFBLogin = async () => {
         try {
             const accessToken = await fbLogin();
             if (accessToken) {
                 localStorage.setItem('accessToken', accessToken);
-                setAccessToken(accessToken);
+                setGlobalVariable('accessToken', accessToken);
             }
         } catch (error) {
             console.error('Exception occurred in "handleFacebookLogin" method. Error: ', error);
@@ -25,7 +27,7 @@ const TopBar = () => {
     const handleFBLogout = () => {
         try {
             localStorage.setItem('accessToken', null);
-            setAccessToken(null);
+            setGlobalVariable('accessToken', null);
         } catch (error) {
             console.error('Exception occurred in "handleLoginLogout" method. Error: ', error);
         }
@@ -36,7 +38,7 @@ const TopBar = () => {
         try {
             const accessToken = localStorage.getItem('accessToken');
             if (accessToken) {
-                setAccessToken(accessToken);
+                setGlobalVariable('accessToken', accessToken);
             }
         } catch (error) {
             console.error('Exception occurred in "initialize" method. Error: ', error);
@@ -47,15 +49,20 @@ const TopBar = () => {
     const accessTokenEffect = () => {
         const asyncFun = async () => {
             try {
+                const accessToken = getGlobalVariable('accessToken');
                 if (accessToken) {
                     // Set the authorization token as a default header for all Axios requests
                     axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
-
                     const endpointUrl = SERVER_BASE_URL + '/user/get-user';
-                    const response = await axios.get(endpointUrl);
-                    const userData = response?.data?.data;
-                    if (userData) {
-                        setUser(userData);
+
+                    try {
+                        const response = await axios.get(endpointUrl);
+                        const userData = response?.data?.data;
+                        if (userData) {
+                            setUser(userData);
+                        }
+                    } catch (error) {
+                        console.error('Failed to fetch user data. Error: ', error);
                     }
                 } else {
                     setUser(null);
@@ -70,7 +77,7 @@ const TopBar = () => {
   
     // Use effect hooks
     useEffect(initialize, []); // Run only once on component mount
-    useEffect(accessTokenEffect, [accessToken]); // Re-run on accessToken change
+    useEffect(accessTokenEffect, [getGlobalVariable('accessToken')]); // Re-run on global variable accessToken change
 
     return (
         <div className="top-bar">

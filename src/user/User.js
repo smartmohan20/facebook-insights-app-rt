@@ -18,7 +18,8 @@ const User = () => {
     // Handle page change
     const handlePageChange = (event) => {
         try {
-            setSelectedPage(event.target.value);
+            const selectedPage = JSON.parse(event.target.value);
+            setSelectedPage(selectedPage);
         } catch (error) {
             console.error('Exception occurred in "handlePageChange" method. Error: ', error);
         }
@@ -44,9 +45,29 @@ const User = () => {
         }
     };
 
-    const handleGetInsights = () => {
+    const handleGetInsights = async () => {
         try {
-            console.error('handleGetInsights');
+            const accessToken = getGlobalVariable('accessToken');
+            if (accessToken) {
+                const pageId = selectedPage?.id;
+                const pageAccessToken = selectedPage?.access_token;
+
+                // Set the authorization token as a default header for all Axios requests
+                axios.defaults.headers.common['Authorization'] = `Bearer ${pageAccessToken}`;
+                const endpointUrl = SERVER_BASE_URL + '/insights/get-insights' + `?pageId=${pageId}&since=${sinceDate}&until=${untilDate}`;
+
+                try {
+                    const response = await axios.get(endpointUrl);
+                    const insightsData = response?.data?.data;
+                    if (insightsData) {
+                        console.error('Insights data: ', insightsData);
+                    }
+                } catch (error) {
+                    console.error('Failed to fetch insights data. Error: ', error);
+                }
+            } else {
+                console.error('Failed to get insights data. Access token not found');
+            }
         } catch (error) {
             console.error('Exception occurred in "handleGetInsights" method. Error: ', error);
         }
@@ -97,7 +118,7 @@ const User = () => {
                                     <select id="pageSelect" value={selectedPage} onChange={handlePageChange} required>
                                     <option value="">Select a page</option>
                                     {pages.map((page) => (
-                                        <option key={page.id} value={page.id}>{page.name}</option>
+                                        <option key={page.id} value={JSON.stringify(page)}>{page.name}</option>
                                     ))}
                                     </select>
                                 </div>
@@ -127,7 +148,7 @@ const User = () => {
                                 </div>
                                 </div>
 
-                                <button type="submit" onClick={handleGetInsights}>Submit</button>
+                                <button className="button" type="submit" onClick={handleGetInsights}>Submit</button>
                             </div>
                         </div>
                     </div>

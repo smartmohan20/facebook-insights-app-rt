@@ -14,12 +14,12 @@
 }
 
 .button {
-  width: calc(100% - 20px); /* Button width minus padding */
+  width: calc(100% - 20px);
   padding: 12px;
   margin: 10px 0;
   border: none;
   border-radius: 5px;
-  background-color: #3498db; /* Blue button color */
+  background-color: #3498db;
   color: #fff;
   font-size: 16px;
   cursor: pointer;

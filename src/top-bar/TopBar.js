@@ -33,10 +33,6 @@ const TopBar = () => {
     // Initialize component
     const initialize = () => {
         try {
-            // Testing code
-            const token = 'EAATbdLudQegBO6FFJENZBdkHWdqH4tDNvaaefwPRoUOpS5dzfsIF09mviRXwCD1byOBPMpJjg7OZC9Wff7APmdEa5QxzGY2ZCZAHwc3QGTAWfxan35IR8uFJSM5GltU933gFHt75ZBoAGmJAQlmym7y6xiJ99HywGpQqxLhi8Yzu8SsrY4O7yBHewTTuxtCT5NwZDZD';
-            localStorage.setItem('accessToken', token);
-
             const accessToken = localStorage.getItem('accessToken');
             if (accessToken) {
                 setAccessToken(accessToken);

@@ -14,6 +14,7 @@ const TopBar = () => {
             const accessToken = await fbLogin();
             if (accessToken) {
                 localStorage.setItem('accessToken', accessToken);
+                setAccessToken(accessToken);
             }
         } catch (error) {
             console.error('Exception occurred in "handleFacebookLogin" method. Error: ', error);

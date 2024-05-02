@@ -1,10 +1,11 @@
 import './App.css';
+import User from './user/User';
 
-function App() {
+const App = () => {
   return (
     <div className="App">
       <header className="App-header">
-        <h2>Facebook Insights App</h2>
+        <User />
       </header>
     </div>
   );

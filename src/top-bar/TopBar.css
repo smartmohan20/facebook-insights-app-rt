@@ -1,0 +1,37 @@
+.top-bar {
+    background-color: #007bff;
+    color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+  
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.app-name {
+    font-size: 1.2rem;
+}
+
+.login-logout button {
+    background-color: white;
+    color: #007bff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.login-logout button:hover {
+    background-color: #f0f0f0;
+}
+
+.welcome-msg {
+    font-size: 1rem;
+}

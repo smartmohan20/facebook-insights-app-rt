@@ -59,7 +59,7 @@ const User = () => {
                     const response = await axios.get(endpointUrl);
                     const insightsData = response;
                     if (insightsData) {
-                        console.error('Insights data: ', insightsData);
+                        console.log('Insights data: ', insightsData);
                         setInsightsData(insightsData);
                     }
                 } catch (error) {

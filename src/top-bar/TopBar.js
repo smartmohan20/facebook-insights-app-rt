@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './TopBar.css';
-import { login as fbLogin } from '../fb-js-snippet/fbJsSnippet';
+import { handleFBLogin, handleFBLogout } from '../fb-js-snippet/fbJsSnippet';
 import { useVariables } from '../global-variables/GlobalVariablesContext';
 
 const FB_GRAPH_BASE_URL = process.env.REACT_APP_FB_GRAPH_BASE_URL;
@@ -11,25 +11,28 @@ const TopBar = () => {
     const [user, setUser] = useState(null);
     
     // Handle Facebook login
-    const handleFBLogin = async () => {
+    const login = async () => {
         try {
-            const accessToken = await fbLogin();
+            const accessToken = await handleFBLogin();
             if (accessToken) {
-                localStorage.setItem('accessToken', accessToken);
                 setGlobalVariable('accessToken', accessToken);
+                localStorage.setItem('accessToken', accessToken);
             }
         } catch (error) {
-            console.error('Exception occurred in "handleFacebookLogin" method. Error: ', error);
+            console.error('Exception occurred in "login" method. Error: ', error);
         }
     };
 
     // Handle user logout
-    const handleFBLogout = () => {
+    const logout = async () => {
         try {
-            localStorage.setItem('accessToken', null);
-            setGlobalVariable('accessToken', null);
+            const isLoggedOut = await handleFBLogout();
+            if (isLoggedOut) {
+                setGlobalVariable('accessToken', '');
+                localStorage.setItem('accessToken', '');
+            }
         } catch (error) {
-            console.error('Exception occurred in "handleLoginLogout" method. Error: ', error);
+            console.error('Exception occurred in "logout" method. Error: ', error);
         }
     };
 
@@ -85,10 +88,10 @@ const TopBar = () => {
                     { user ? (
                         <div>
                             <span className='welcome-msg'>Welcome, { user.name} </span>
-                            <button onClick={handleFBLogout}>Logout</button>
+                            <button onClick={logout}>Logout</button>
                         </div>
                     ) : (
-                        <button onClick={handleFBLogin}>Login</button>
+                        <button onClick={login}>Login</button>
                     )}
                 </div>
             </div>

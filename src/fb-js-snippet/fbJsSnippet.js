@@ -1,7 +1,7 @@
 const appId = process.env.REACT_APP_FACEBOOK_APP_ID;
 
 // Function to initialize Facebook SDK
-const initializeFacebookSDK = () => {
+const initializeFacebookSDK = async () => {
     try {
         window.fbAsyncInit = async function () {
                 await window.FB.init({
@@ -31,31 +31,70 @@ const initializeFacebookSDK = () => {
     }
 };
 
+// Method to get login status
+const getLoginStatus = async () => {
+    try {
+        return new Promise(async (resolve, reject) => {
+            window.FB.getLoginStatus(function (response) {
+                if (response.status === 'connected') {
+                    resolve(true);
+                } else {
+                    resolve(false);
+                }
+            });
+        });
+    } catch (error) {
+        console.error('Exception occurred in "getLoginStatus" method. Error: ', error);
+    } 
+};
+
 // Method to trigger Facebook login
-export const login = async () => {
+export const handleFBLogin = async () => {
     try {
         return new Promise(async (resolve, reject) => {
             // Trigger Facebook login dialog
             await window.FB.login(
                 function (response) {
                     if (response.authResponse) {
+                        console.log('User logged in from Facebook successfully');
                         // User authorized your app
                         const accessToken = response.authResponse.accessToken;
                         resolve(accessToken);
                     } else {
                         // User cancelled login or did not fully authorize.
-                        console.warn('User cancelled login or did not fully authorize.');
+                        console.warn('User cancelled login or did not fully authorize your app');
                         reject();
                     }
                 },
                 { scope: 'public_profile,email' } // Request permissions
             );
         });
-
-        
     } catch (error) {
-        console.error('Exception occurred in "login" method. Error: ', error);
+        console.error('Exception occurred in "handleFBLogin" method. Error: ', error);
     }
 };
 
-initializeFacebookSDK();
+// Method to trigger Facebook logout
+export const handleFBLogout = async () => {
+    try {
+        return new Promise(async (resolve, reject) => {
+            const isLoggedIn = await getLoginStatus();
+            if (isLoggedIn) {
+                await window.FB.logout(function (response) {
+                    if (!response.authResponse) {
+                        console.log('User logged out from Facebook successfully');
+                        resolve(true);
+                    } else {
+                        console.warn('Failed to logout from Facebook!', 'Response: ', response);
+                        reject(false);
+                    }
+                });
+            }
+        });
+    } catch (error) {
+        console.error('Exception occurred in "handleFBLogout" method. Error: ', error);
+    }
+};
+
+// Initialize Facebook SDK
+await initializeFacebookSDK();

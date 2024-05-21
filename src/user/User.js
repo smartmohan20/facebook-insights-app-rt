@@ -109,56 +109,69 @@ const User = () => {
                 (
                     <div className="user-form">
                         <div className="content">
-                            <div>
-                                <div className="form-row">
-                                <div className="form-group">
-                                    <label htmlFor="pageSelect">Select a Page:</label>
-                                    <select id="pageSelect" value={selectedPage} onChange={handlePageChange} required>
-                                    <option value="">Select a page</option>
-                                    {pages.map((page) => (
-                                        <option key={page.id} value={JSON.stringify(page)}>{page.name}</option>
-                                    ))}
-                                    </select>
-                                </div>
-
-                                <div className="form-group">
-                                    <label htmlFor="sinceDatePicker">Since:</label>
-                                    <DatePicker
-                                    id="sinceDatePicker"
-                                    selected={sinceDate}
-                                    onChange={handleSinceChange}
-                                    dateFormat="MM/dd/yyyy"
-                                    placeholderText="Select since date"
-                                    required
-                                    />
-                                </div>
-
-                                <div className="form-group">
-                                    <label htmlFor="untilDatePicker">Until:</label>
-                                    <DatePicker
-                                    id="untilDatePicker"
-                                    selected={untilDate}
-                                    onChange={handleUntilChange}
-                                    dateFormat="MM/dd/yyyy"
-                                    placeholderText="Select until date"
-                                    required
-                                    />
-                                </div>
-                                </div>
-
-                                <button className="button" type="submit" onClick={handleGetInsights}>Submit</button>
-                                { insightsData &&
+                            { pages.length > 0 ? 
                                 (
-                                    <CodeViewer data={insightsData} /> 
-                                )}
-                            </div>
+                                    <div>
+                                        <div className="form-row">
+                                        <div className="form-group">
+                                            <label htmlFor="pageSelect">Select a Page:</label>
+                                            <select id="pageSelect" value={selectedPage} onChange={handlePageChange} required>
+                                            <option value="">Select a page</option>
+                                            {pages.map((page) => (
+                                                <option key={page.id} value={JSON.stringify(page)}>{page.name}</option>
+                                            ))}
+                                            </select>
+                                        </div>
+
+                                        <div className="form-group">
+                                            <label htmlFor="sinceDatePicker">Since:</label>
+                                            <DatePicker
+                                            id="sinceDatePicker"
+                                            selected={sinceDate}
+                                            onChange={handleSinceChange}
+                                            dateFormat="MM/dd/yyyy"
+                                            placeholderText="Select since date"
+                                            required
+                                            />
+                                        </div>
+
+                                        <div className="form-group">
+                                            <label htmlFor="untilDatePicker">Until:</label>
+                                            <DatePicker
+                                            id="untilDatePicker"
+                                            selected={untilDate}
+                                            onChange={handleUntilChange}
+                                            dateFormat="MM/dd/yyyy"
+                                            placeholderText="Select until date"
+                                            required
+                                            />
+                                        </div>
+                                        </div>
+
+                                        <button className="button" type="submit" onClick={handleGetInsights}>Submit</button>
+                                        { insightsData &&
+                                        (
+                                            <CodeViewer data={insightsData} /> 
+                                        )}
+                                    </div>
+                                ) :
+                                (
+                                    <div>
+                                        <p>
+                                            No pages found!
+                                            <br/>
+                                            You need to create a page to access this feature.
+                                        </p>
+                                    </div>
+                                )
+                            }
                         </div>
                     </div>
                 )
                 :
                 (
                     <div>
-                        <p>Kindly login to access this feature</p>
+                        <p>Kindly login to access this feature.</p>
                     </div>
                 )
             }

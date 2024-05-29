@@ -66,7 +66,7 @@ export const handleFBLogin = async () => {
                         reject();
                     }
                 },
-                { scope: 'public_profile,email' } // Request permissions
+                { scope: 'public_profile,email,read_insights,pages_read_engagement' } // Request permissions
             );
         });
     } catch (error) {
